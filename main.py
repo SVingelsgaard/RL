@@ -1,10 +1,12 @@
 #imports
 from concurrent.futures import process
 from re import S
+from sre_parse import State
 import gym
 import numpy as np
 import time
 import pandas as pd
+import matplotlib.pyplot as plt
 
 import tensorflow as tf
 import keras
@@ -15,7 +17,7 @@ from rl.memory import SequentialMemory
 #ML envirement
 class Env(gym.Env):
     def __init__(self):
-        self.action_space = gym.spaces.Discrete(3)
+        self.action_space = gym.spaces.Discrete(2)
         
         self.observation_space = gym.spaces.Box(
             low=0,
@@ -25,7 +27,7 @@ class Env(gym.Env):
         )
 
     def reset(self):
-        self.state()
+        sim.reset()
         return sim.state
     def step(self, action):
         sim.action = action
@@ -57,6 +59,7 @@ class Process():
         self.reward = 0
         self.done = False
         self.score = 0
+        self.y = []
 
         #system
         self.timeLast = 0
@@ -74,10 +77,10 @@ class Process():
                 ]) 
 
         #create agent
-        self.dqn = DQNAgent(
+        self.agent = DQNAgent(
             
                 model=self.model, 
-                memory=SequentialMemory(limit=50000, window_length=1), 
+                memory=SequentialMemory(limit=10000, window_length=1), 
                 policy=BoltzmannQPolicy(), 
 
                 nb_actions=2, 
@@ -85,16 +88,19 @@ class Process():
                 target_model_update=1e-2
                 )
         #compile agent
-        self.dqn.compile(tf.keras.optimizers.Adam(learning_rate=1e-3), metrics=['mae'])
+        self.agent.compile(tf.keras.optimizers.Adam(learning_rate=1e-3), metrics=['mae'])
 
     def step(self):
         #self.controller()
         self.mafs()
 
         #reward
+        self.reward = 0
         if (self.e < 3) and (self.e > -3):
             self.reward += 1
         self.score += self.reward
+
+        self.plot()
 
     def mafs(self):
         #mafstime
@@ -119,6 +125,7 @@ class Process():
         
         self.state = np.array([self.pv])
 
+
     def reset(self):
         self.pv = 0
         self.reward = 0
@@ -131,16 +138,19 @@ class Process():
             self.u = True
         else:
             self.u = False
+    
+    def plot(self):
+        self.y.append(self.state) 
 
 if __name__ == '__main__':
     sim = Process()
 
-    for i in range(250):
-        time.sleep(.02)
-        sim.env.action_space.sample()
-        print(sim.action)
-        sim.step()
-        #print(sim.state)
+    sim.agent.fit(sim.env, nb_steps=5000, visualize=False, verbose=1)
+
+    plt.plot(np.arange(len(sim.y)), sim.y)
+    plt.show()
+    
+
 
 
 
