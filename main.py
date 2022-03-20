@@ -145,7 +145,7 @@ class Process():
 if __name__ == '__main__':
     sim = Process()
 
-    sim.agent.fit(sim.env, nb_steps=5000, visualize=False, verbose=1)
+    sim.agent.fit(sim.env, nb_steps=10 000, visualize=False, verbose=1)
 
     plt.plot(np.arange(len(sim.y)), sim.y)
     plt.show()
