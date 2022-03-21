@@ -98,6 +98,7 @@ class Process():
         self.reward = 0
         if (self.e < 3) and (self.e > -3):
             self.reward += 1
+            self.done = True
         self.score += self.reward
 
         self.plot()
@@ -145,7 +146,8 @@ class Process():
 if __name__ == '__main__':
     sim = Process()
 
-    sim.agent.fit(sim.env, nb_steps=10 000, visualize=False, verbose=1)
+    sim.agent.fit(sim.env, nb_steps=10000, visualize=False, verbose=1)
+    sim.agent.test(sim.env, nb_episodes=5, visualize=False)
 
     plt.plot(np.arange(len(sim.y)), sim.y)
     plt.show()
