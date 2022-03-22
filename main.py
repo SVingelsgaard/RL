@@ -35,6 +35,7 @@ class Env(gym.Env):
         sim.step()
 
         info = {}
+        print(sim.state, sim.reward)
 
         return sim.state, sim.reward, sim.done, info
     def render(self):
@@ -65,6 +66,7 @@ class Process():
         self.timeLast = 0
         self.time = 0 
         self.mafsTime = 0
+        self.runTime = 0
 
         #RL
         self.env = Env()
@@ -97,9 +99,14 @@ class Process():
         #reward
         self.reward = 0
         if (self.e < 3) and (self.e > -3):
-            self.reward += 1
-            self.done = True
+            self.reward = 1
+        else:
+            self.reward = -1   
+
         self.score += self.reward
+
+        if self.runTime > 10:
+            self.done = True
 
         self.plot()
 
@@ -110,6 +117,7 @@ class Process():
             self.timeLast = self.time-.2
         self.mafsTime = self.time - self.timeLast #calc mafstime. basically cycletime
         self.timeLast = self.time#uptdate last time
+        self.runTime += self.mafsTime#update runtime
 
         #assign action
         self.u = self.action
@@ -130,6 +138,9 @@ class Process():
     def reset(self):
         self.pv = 0
         self.reward = 0
+        self.runTime = 0 
+        self.score = 0 
+        self.done = False
 
         self.state = np.array([self.pv])
 
@@ -146,8 +157,11 @@ class Process():
 if __name__ == '__main__':
     sim = Process()
 
-    sim.agent.fit(sim.env, nb_steps=10000, visualize=False, verbose=1)
-    sim.agent.test(sim.env, nb_episodes=5, visualize=False)
+    #sim.agent.fit(sim.env, nb_steps=10000, visualize=False, verbose=1)
+    #sim.agent.save_weights('dqn_weights.h5f', overwrite=True)
+
+    sim.agent.load_weights('dqn_weights.h5f')
+    sim.agent.test(sim.env, nb_episodes=1, visualize=False)
 
     plt.plot(np.arange(len(sim.y)), sim.y)
     plt.show()
