@@ -123,10 +123,10 @@ class Process():
         self.u = self.action
 
         #innløp
-        self.waterIn = int(self.u) * (10 * self.mafsTime)#10 l/s
+        self.waterIn = int(self.u) * (10)# * self.mafsTime)#10 l/s
 
         #utløp
-        self.waterOut = 1 * self.mafsTime
+        self.waterOut = 1 #* self.mafsTime
 
         #calc pv
         self.pv += self.waterIn - self.waterOut
@@ -157,10 +157,10 @@ class Process():
 if __name__ == '__main__':
     sim = Process()
 
-    #sim.agent.fit(sim.env, nb_steps=10000, visualize=False, verbose=1)
+    sim.agent.fit(sim.env, nb_steps=10000, visualize=False, verbose=1)
     #sim.agent.save_weights('dqn_weights.h5f', overwrite=True)
 
-    sim.agent.load_weights('dqn_weights.h5f')
+    #sim.agent.load_weights('dqn_weights.h5f')
     sim.agent.test(sim.env, nb_episodes=1, visualize=False)
 
     plt.plot(np.arange(len(sim.y)), sim.y)
