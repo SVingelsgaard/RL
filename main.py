@@ -3,6 +3,7 @@ from concurrent.futures import process
 from re import S
 from sre_parse import State
 import gym
+import custom_gym.envs
 import numpy as np
 import time
 import pandas as pd
