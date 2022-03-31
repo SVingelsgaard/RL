@@ -36,7 +36,7 @@ class Env(gym.Env):
         sim.step()
 
         info = {}
-        print(sim.state, sim.reward)
+        #print(sim.state, sim.reward)
 
         return sim.state, sim.reward, sim.done, info
     def render(self):
