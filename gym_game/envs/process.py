@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import time
+import pickle
 
 
 class Process():
@@ -23,6 +24,9 @@ class Process():
         self.done = False
         self.score = 0
         self.y = []
+        with open('data.txt', 'w') as f:
+                f.write('')
+                print("wrote data")
 
         #system
         self.timeLast = 0
@@ -37,13 +41,16 @@ class Process():
         #reward
         self.reward = 0
         if (self.e < 3) and (self.e > -3):
-            self.reward = 1
-        else:
-            self.reward = -1   
+            self.reward = 1  
 
         self.score += self.reward
 
         if self.runTime > 10:
+            with open('data.txt', 'a') as f:
+                f.write(str(self.y))
+                f.write('\n')
+                print("wrote data")
+            self.y = []
             self.done = True
 
         self.plot()
@@ -90,5 +97,5 @@ class Process():
             self.u = False
     
     def plot(self):
-        self.y.append(self.state) 
+        self.y.append(int(self.state)) 
 

@@ -30,12 +30,14 @@ if __name__ == '__main__':
             
                 model=model, 
                 memory=SequentialMemory(limit=10000, window_length=1), 
-                policy=BoltzmannQPolicy(), 
+                policy=BoltzmannQPolicy
+                (), 
 
                 nb_actions=2, 
                 nb_steps_warmup=10,
                 target_model_update=1e-2
                 )
+
 
     agent.compile(tf.keras.optimizers.Adam(learning_rate=1e-3), metrics=['mae'])
 
