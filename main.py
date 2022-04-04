@@ -1,4 +1,5 @@
 #imports
+from machine_learning.DeepQNetwork import DQNAgent
 from concurrent.futures import process
 from re import S
 from sre_parse import State
